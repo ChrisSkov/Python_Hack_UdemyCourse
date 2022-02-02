@@ -1,8 +1,15 @@
 import socket
 from IPy import IP
 
-
 port = 80
+
+
+def check_ip(ip):
+    try:
+        IP(ip)
+        return (ip)
+    except ValueError:
+        return socket.gethostbyname(ip)
 
 
 def scan_port(ipaddress, port):
@@ -14,7 +21,9 @@ def scan_port(ipaddress, port):
     except:
         print('[-] Port ' + str(port) + ' is closed')
 
+
 ipaddress = input('[+] Enter scanning target: ')
+converted_ip = check_ip(ipaddress)
 
 for port in range(75, 85):
-    scan_port(ipaddress,port)
+    scan_port(converted_ip, port)
