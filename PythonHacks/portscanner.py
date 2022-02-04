@@ -16,6 +16,7 @@ def check_ip(ip):
     except ValueError:
         return socket.gethostbyname(ip)
 
+
 def get_banner(s):
     return s.recv(1024)
 
@@ -23,6 +24,7 @@ def get_banner(s):
 def scan_port(ipaddress, port):
     try:
         sock = socket.socket()
+        # Higher timeout = higher accuracy but slower scan speed
         sock.settimeout(0.35)
         sock.connect((ipaddress, port))
         try:
@@ -34,9 +36,11 @@ def scan_port(ipaddress, port):
         pass
 
 
-targets = input('[+] Enter scanning target/s (split multiple targets with ","): ')
-if ',' in targets:
-    for ip_add in targets.split(','):
-        scan(ip_add.strip(' '))
-else:
-    scan(targets)
+if __name__ == "__main__":
+    targets = input('[+] Enter scanning target/s (split multiple targets with ","): ')
+    # port_num = input('Enter number of ports that you want to scan: ')
+    if ',' in targets:
+        for ip_add in targets.split(','):
+            scan(ip_add.strip(' '))
+    else:
+        scan(targets)
