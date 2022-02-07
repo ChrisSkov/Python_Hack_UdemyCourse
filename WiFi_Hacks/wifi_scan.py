@@ -3,10 +3,9 @@ from threading import Thread
 import pandas
 import time
 import os
-# BSSID is MAC address of the access point
-from scapy.layers.dot11 import *
 
-networks = pandas.DataFrame(columns=["BSSID", "SSID", "dBm_Signla", "Channel", "Crypto"])
+# BSSID is MAC address of the access point
+networks = pandas.DataFrame(columns=["BSSID", "SSID", "dBm_Signal", "Channel", "Crypto"])
 networks.set_index("BSSID", inplace=True)
 
 
@@ -18,6 +17,7 @@ def callback(packet):
             dbm_signal = packet.dBm_AntSignal
         except:
             dbm_signal = "N/A"
+
         stats = packet[Dot11Beacon].network_stats()
         channel = stats.get("channel")
         crypto = stats.get("crypto")
@@ -31,21 +31,23 @@ def print_all():
         time.sleep(0.5)
 
 
-if __name__ == "__main__":
-    interface = "wlan0mon"
-    printer = Thread(target=print_all())
-    printer.daemon = True
-    printer.start()
-    sniff(prn=callback, iface=interface)
-
-
 def change_channel():
     ch = 1
     while True:
         os.system(f"iwconfig {interface} channel {ch}")
         ch = ch % 14 + 1
         time.sleep(0.5)
-        # change channel command = iwconfig wlan0mon channel 2  changes to channel 2
-        channel_changer = Thread(target=change_channel())
-        channel_changer.daemon = True
-        channel_changer.start()
+
+
+if __name__ == "__main__":
+    interface = "wlan0mon"
+    printer = Thread(target=print_all)
+    printer.daemon = True
+    printer.start()
+
+    channel_changer = Thread(
+        target=change_channel)  # change channel command = iwconfig wlan0mon channel 2  changes to channel 2
+    channel_changer.daemon = True
+    channel_changer.start()
+
+    sniff(prn=callback, iface=interface)
