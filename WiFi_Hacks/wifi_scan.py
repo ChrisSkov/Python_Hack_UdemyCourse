@@ -35,7 +35,7 @@ def change_channel():
     ch = 1
     while True:
         os.system(f"iwconfig {interface} channel {ch}")
-        ch = ch % 14 + 1
+        ch = ch % 36 + 1
         time.sleep(0.5)
 
 
