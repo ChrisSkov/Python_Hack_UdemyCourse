@@ -33,3 +33,5 @@ try:
 except KeyboardInterrupt:
     print('Closing ARP spoofer')
     exit(0)
+# echo 1 >> /proc/sys/net/ipv4/ip_forward must be sudo
+# vm must be run in bridged mode
