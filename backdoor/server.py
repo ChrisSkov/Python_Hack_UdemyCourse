@@ -1,6 +1,8 @@
 import socket
 import termcolor
 import json
+import os
+
 
 def reliable_recv():
     data = ''
@@ -23,6 +25,8 @@ def target_communication():
         reliable_send(command)
         if command == 'quit':
             break
+        elif command == 'clear':
+            os.system('clear')
         elif command == 'help':
             print(termcolor.colored('''\n
             quit                                    --> Quit session with target

