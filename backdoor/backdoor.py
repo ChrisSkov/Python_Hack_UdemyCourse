@@ -81,6 +81,8 @@ def shell():
         command = reliable_recv()
         if command == 'quit':
             break
+        elif command == 'background':
+            pass
         elif command == 'help':
             pass
         elif command == 'clear':
