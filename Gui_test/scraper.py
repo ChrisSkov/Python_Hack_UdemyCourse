@@ -52,4 +52,3 @@ except KeyboardInterrupt:
 
 for mail in emails:
     print(mail)
-
