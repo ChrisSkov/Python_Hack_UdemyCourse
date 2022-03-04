@@ -5,7 +5,6 @@ import urllib.parse
 from collections import deque
 import re
 import main as ting
-import PySimpleGUI as sg
 
 # https://www.kea.dk
 
@@ -24,9 +23,10 @@ class EmailScraper:
     count = 0
 
     def scrape_emails(self, target, window):
-
-        self.urls = deque([str(target)])
-
+        web_prefix = 'https://www.'
+        sub_domains = []
+        self.urls = deque([str( web_prefix+ target)])
+        out_string = ''
         try:
             while len(self.urls):
                 self.count += 1
@@ -39,8 +39,9 @@ class EmailScraper:
                 base_url = '{0.scheme}://{0.netloc}'.format(parts)
 
                 path = url[:url.rfind('/') + 1] if '/' in parts.path else url
-                out = '[%d] Processing %s' % (self.count, url)
-                update_output_text(window=window, field_to_update='-OUTPUT-', new_text=out)
+                out_string += '\n [%d] Processing %s' % (self.count, url)
+                sub_domains.append([re.findall(r"[a-z0-9\.\-+_]+.[a-z0-9\.\-+_]+\.[a-z]+.[a-z0-0\.\-+_']", url)])
+                update_output_text(window=window, field_to_update='-OUTPUT-', new_text=sub_domains)
                 print('[%d] Processing %s' % (self.count, url))
 
                 try:
@@ -59,14 +60,16 @@ class EmailScraper:
                         link = base_url + link
                     elif not link.startswith('http'):
                         link = path + link
-                    elif not link in self.urls and not link in self.scraped_urls:
+                    elif link not in self.urls and link not in self.scraped_urls:
                         self.urls.append(link)
-            return out
 
         except KeyboardInterrupt:
             print('[-] Closing!')
 
         for mail in self.emails:
+            out_string += '\n '
+            out_string += mail
+            update_output_text(window=window, field_to_update='-OUTPUT-', new_text=out_string)
             print(mail)
 
 
