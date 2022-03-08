@@ -5,8 +5,8 @@ import subprocess
 import email_scraper as es
 
 
-def start_nmap(args):
-    command_to_run = 'nmap' + args
+def start_nmap(arguments):
+    command_to_run = 'nmap' + arguments
     es.update_output_text(window=my_ui.window, field_to_update='-OUTPUT-',
                           new_text='Running command: ' + command_to_run)
     # sg.popup(command_to_run, keep_on_top=False)
@@ -28,20 +28,21 @@ class UITing:
                sg.Checkbox('Treat all hosts as online', key='-Pn', metadata='-Pn')],
               [sg.Checkbox('Fast mode', key='-F', metadata='-F')]]
 
-    mini_column = [[sg.Text(size=(150, 290), key='-OUTPUT-', auto_size_text=True, expand_y=True, expand_x=True)]]
+    mini_column = [sg.Text(size=(150, 290), key='-OUTPUT-', auto_size_text=True, expand_y=True, expand_x=True)]
     full_column = sg.Column(column)
 
-    little_column = sg.Column(mini_column, scrollable=True, vertical_scroll_only=True, expand_x=True)
+    little_column = sg.Column([mini_column], scrollable=True, vertical_scroll_only=True, expand_x=True)
 
-    cross_tab_layout = [[[sg.Text('Enter target', font='15')], [sg.Input(key='-INPUT-', pad=(8, 0), expand_x=True)]]]
+    cross_tab_layout = [[[sg.Text('Enter target', font='15')], sg.Input(key='-INPUT-', pad=(8, 0), expand_x=False),
+                         sg.Button('Never-mind')]]
 
-    scan_options = [[
-        sg.Button('Scan!', bind_return_key=True),
-        sg.Button('Scrape emails'),
-        sg.Button('Never-mind')], [full_column], [little_column]]
+    scan_tab = [[full_column], [sg.Button('Scan!', bind_return_key=True)], [little_column]]
+    scrape_tab = [[sg.Button('Scrape emails')]]
     layout = cross_tab_layout
-    layout += [[sg.TabGroup([[sg.Tab('Scan tings', scan_options)]])]]
-
+    layout += [[sg.TabGroup([
+        [sg.Tab('Scan tings', scan_tab, key='-SCAN_TAB-')],
+        [sg.Tab('Scrape tings', scrape_tab, key='-SCRAPE_TAB-')]],
+        key='-TAB_GROUP-', enable_events=True)]]
 
     layout[-1].append(sg.Sizegrip())
     window = sg.Window('Script Kiddie Toolbox', layout, location=(1050, 300), resizable=True, size=(1000, 550))
@@ -63,6 +64,7 @@ if __name__ == '__main__':
     my_ui = UITing()
     while True:
         event, values = my_ui.window.read()
+       # print(values[event])
         if event == sg.WINDOW_CLOSED or event == 'Never-mind':
             break
         elif event == 'Scan!' or event == 'Return':
