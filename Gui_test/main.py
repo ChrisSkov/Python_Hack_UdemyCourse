@@ -18,9 +18,10 @@ def start_nmap(arguments):
     print(sp)
 
 
-class UITing:
+class UILayout:
+    go_button = sg.Button('GO!', bind_return_key=True, key='-GO_BUTTON-')
     cross_tab_layout = [[[sg.Text('Enter target', font='15')], sg.Input(key='-INPUT-', pad=(8, 0), expand_x=False),
-                         sg.Button('Never-mind')]]
+                         go_button, sg.Button('Never-mind')]]
     # key must be the same as metadata
     column = [[sg.Checkbox('OS Detection', default=False, auto_size_text=True, key='-O', metadata='-O'),
                sg.Checkbox('OS and version detection', key='-A', metadata='-A'),
@@ -28,19 +29,20 @@ class UITing:
                sg.Checkbox('Treat all hosts as online', key='-Pn', metadata='-Pn')],
               [sg.Checkbox('Fast mode', key='-F', metadata='-F')]]
 
-    output_column = sg.Column([[sg.Text(size=(150, 290), key='-OUTPUT-',
-                                        auto_size_text=True, expand_y=True,
-                                        expand_x=True)]],
-                              scrollable=True, vertical_scroll_only=True, expand_x=True)
+    output_column = [[sg.Column([[sg.Text(size=(90, 90), key='-OUTPUT-',
+                                          auto_size_text=True, expand_y=True,
+                                          expand_x=True)]],
+                                scrollable=True, vertical_scroll_only=True, expand_x=True)]]
 
-    scan_tab = [[sg.Column(column)], [sg.Button('Scan!', bind_return_key=True)], [output_column]]
+    scan_tab = [[sg.Column(column)],
+                [sg.Button('Scan!', bind_return_key=True, key='-SCAN_BUTTON-')]]  # , [output_column]]
     scrape_tab = [[sg.Button('Scrape emails')]]
     layout = cross_tab_layout
     layout += [[sg.TabGroup([
-        [sg.Tab('Scan tings', scan_tab, key='-SCAN_TAB-')],
-        [sg.Tab('Scrape tings', scrape_tab, key='-SCRAPE_TAB-')]],
+        [sg.Tab('Scanning (nmap)', scan_tab, key='-SCAN_TAB-')],
+        [sg.Tab('Web scraping', scrape_tab, key='-SCRAPE_TAB-')]],
         key='-TAB_GROUP-', enable_events=True)]]
-
+    layout += output_column
     layout[-1].append(sg.Sizegrip())
     window = sg.Window('Script Kiddie Toolbox', layout, location=(1050, 300), resizable=True, size=(1000, 550))
 
@@ -56,13 +58,23 @@ def get_scan_args():
     return arg_string
 
 
+def change_go_button_text():
+    my_text = str(values[event])
+    update_text = my_text[1:my_text.find('_')]
+    update_text = update_text[0:1] + update_text[1:].lower() + '!'
+    print(update_text)
+    my_ui.go_button.update(text=update_text)
+
+
 if __name__ == '__main__':
-    my_ui = UITing()
+    my_ui = UILayout()
     while True:
         event, values = my_ui.window.read()
         # print(values[event])
         if event == sg.WINDOW_CLOSED or event == 'Never-mind':
             break
+        elif values[event] != '':
+            change_go_button_text()
         elif event == 'Scan!' or event == 'Return':
             args = get_scan_args() + ' ' + values['-INPUT-']
             start_nmap(args)

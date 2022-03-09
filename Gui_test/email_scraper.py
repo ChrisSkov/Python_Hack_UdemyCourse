@@ -8,7 +8,7 @@ import main as ting
 
 # https://www.kea.dk
 
-ui_ting = ting.UITing()
+ui_ting = ting.UILayout()
 
 
 def update_output_text(window, field_to_update, new_text):
