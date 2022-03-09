@@ -21,14 +21,18 @@ class EmailScraper:
     emails = set()
     urls = ''
     count = 0
+    output = ''
 
     def scrape_emails(self, target, window):
+
+        global output
         web_prefix = 'https://www.'
         sub_domains = []
         self.urls = deque([str(web_prefix + target)])
         out_string = ''
         try:
-            while len(self.urls):
+            output = ''
+            while len(self.urls) and ui_ting.yes_no is True:
                 self.count += 1
                 if self.count == 100:
                     break
@@ -41,8 +45,10 @@ class EmailScraper:
                 path = url[:url.rfind('/') + 1] if '/' in parts.path else url
                 out_string += '\n [%d] Processing %s' % (self.count, url)
                 sub_domains.append([re.findall(r"[a-z0-9\.\-+_]+.[a-z0-9\.\-+_]+\.[a-z]+.[a-z0-0\.\-+_']", url)])
-                update_output_text(window=window, field_to_update='-OUTPUT-', new_text=sub_domains)
-                print('[%d] Processing %s' % (self.count, url))
+                output += url + '\n'
+                # NOTE TO SELF: CAN BE EXTENDED TO PRINT SUBDOMAINS WITHOUT TLS/SSL
+                update_output_text(window=window, field_to_update='-OUTPUT-', new_text=output)
+                # print('[%d] Processing %s' % (self.count, url))
 
                 try:
                     response = requests.get(url)
@@ -67,9 +73,8 @@ class EmailScraper:
             print('[-] Closing!')
 
         for mail in self.emails:
-            out_string += '\n '
-            out_string += mail
-            update_output_text(window=window, field_to_update='-OUTPUT-', new_text=out_string)
+            output += mail + '\n'
+            update_output_text(window=window, field_to_update='-OUTPUT-', new_text=output)
             print(mail)
 
 
