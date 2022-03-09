@@ -4,11 +4,9 @@ import requests.exceptions
 import urllib.parse
 from collections import deque
 import re
-import main as ting
+
 
 # https://www.kea.dk
-
-ui_ting = ting.UILayout()
 
 
 def update_output_text(window, field_to_update, new_text):
@@ -21,7 +19,6 @@ class EmailScraper:
     def scrape_emails(self, target, window):
         scraped_urls = set()
         emails = set()
-        urls = ''
         count = 0
         output = ''
         web_prefix = 'https://www.'
@@ -76,8 +73,3 @@ class EmailScraper:
             update_output_text(window=window, field_to_update='-OUTPUT-', new_text=output)
             print(mail)
         print('\nDONE')
-
-
-if __name__ == '__main__':
-    es = EmailScraper()
-    es.scrape_emails('https://www.kea.dk')
