@@ -19,7 +19,7 @@ def start_nmap(arguments):
 
 
 class UILayout:
-    go_button = sg.Button('GO!', bind_return_key=True, key='-GO_BUTTON-')
+    go_button = sg.Button('Scan!', bind_return_key=True, key='-GO-')
     cross_tab_layout = [[[sg.Text('Enter target', font='15')], sg.Input(key='-INPUT-', pad=(8, 0), expand_x=False),
                          go_button, sg.Button('Never-mind')]]
     # key must be the same as metadata
@@ -34,14 +34,16 @@ class UILayout:
                                           expand_x=True)]],
                                 scrollable=True, vertical_scroll_only=True, expand_x=True)]]
 
-    scan_tab = [[sg.Column(column)],
-                [sg.Button('Scan!', bind_return_key=True, key='-SCAN_BUTTON-')]]  # , [output_column]]
+    scan_tab = [[sg.Column(column)]]#,
+                #[sg.Button('Scan!', bind_return_key=True, key='-SCAN_BUTTON-')]]  # , [output_column]]
+    #scrape_button = sg.Button('Scrape emails')
     scrape_tab = [[sg.Button('Scrape emails')]]
     layout = cross_tab_layout
-    layout += [[sg.TabGroup([
+    my_tab_group = sg.TabGroup([
         [sg.Tab('Scanning (nmap)', scan_tab, key='-SCAN_TAB-')],
         [sg.Tab('Web scraping', scrape_tab, key='-SCRAPE_TAB-')]],
-        key='-TAB_GROUP-', enable_events=True)]]
+        key='-TAB_GROUP-', enable_events=True)
+    layout += [[my_tab_group]]
     layout += output_column
     layout[-1].append(sg.Sizegrip())
     window = sg.Window('Script Kiddie Toolbox', layout, location=(1050, 300), resizable=True, size=(1000, 550))
@@ -62,23 +64,34 @@ def change_go_button_text():
     my_text = str(values[event])
     update_text = my_text[1:my_text.find('_')]
     update_text = update_text[0:1] + update_text[1:].lower() + '!'
-    print(update_text)
+   # print(update_text)
     my_ui.go_button.update(text=update_text)
 
 
+def do_scrape(val):
+    scrape_me = es.EmailScraper()
+    es.EmailScraper.scrape_emails(self=scrape_me, target=val['-INPUT-'], window=my_ui.window)
+
+
+def do_scan(val):
+    args = get_scan_args() + ' ' + val['-INPUT-']
+    start_nmap(args)
+
+
 if __name__ == '__main__':
+    my_dict = {'-SCRAPE_TAB-': do_scrape, '-SCAN_TAB-': do_scan}
     my_ui = UILayout()
+    current_tab = ''
     while True:
         event, values = my_ui.window.read()
-        # print(values[event])
+        print(my_ui.my_tab_group.Get())
         if event == sg.WINDOW_CLOSED or event == 'Never-mind':
             break
-        elif values[event] != '':
-            change_go_button_text()
-        elif event == 'Scan!' or event == 'Return':
-            args = get_scan_args() + ' ' + values['-INPUT-']
-            start_nmap(args)
-        elif event == 'Scrape emails':
-            scrape_me = es.EmailScraper()
-            es.EmailScraper.scrape_emails(self=scrape_me, target=values['-INPUT-'], window=my_ui.window)
+        elif event == 'Scan!' or event == 'Return' or event == '-GO-':
+            function_to_execute = my_dict[my_ui.my_tab_group.Get()]
+            function_to_execute(values)
+    #  elif values[event] != '' and values[event] != my_ui.go_button:
+        #    change_go_button_text()
+       # else:
+
     my_ui.window.close()
