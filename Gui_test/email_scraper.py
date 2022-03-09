@@ -25,7 +25,7 @@ class EmailScraper:
     def scrape_emails(self, target, window):
         web_prefix = 'https://www.'
         sub_domains = []
-        self.urls = deque([str( web_prefix+ target)])
+        self.urls = deque([str(web_prefix + target)])
         out_string = ''
         try:
             while len(self.urls):
@@ -72,9 +72,6 @@ class EmailScraper:
             update_output_text(window=window, field_to_update='-OUTPUT-', new_text=out_string)
             print(mail)
 
-
-if ui_ting.do_scrape:
-    EmailScraper().scrape_emails(ui_ting.window.read()['-INPUT-'])
 
 if __name__ == '__main__':
     es = EmailScraper()
