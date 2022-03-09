@@ -29,9 +29,6 @@ def do_scan(val):
 
 
 class UILayout:
-
-    yes_no = True
-
     go_button = sg.Button('Scan!', bind_return_key=True, key='-GO-')
     cross_tab_layout = [[[sg.Text('Enter target', font='15')], sg.Input(key='-INPUT-', pad=(8, 0), expand_x=False),
                          go_button, sg.Button('Never-mind')]]
@@ -44,10 +41,8 @@ class UILayout:
 
     output_column = [[sg.Column([[sg.Output(size=(90, 90), key='-OUTPUT-', expand_y=True, expand_x=True)]],
                                 expand_x=True, expand_y=True)]]
-    scan_tab = [[sg.Column(column)]]  # ,
-    # [sg.Button('Scan!', bind_return_key=True, key='-SCAN_BUTTON-')]]  # , [output_column]]
-    # scrape_button = sg.Button('Scrape emails')
-    scrape_tab = [[sg.Text('Scrape emails')]]
+    scan_tab = [[sg.Column(column)]]
+    scrape_tab = [[sg.Text('Scrape emails.... or don\'t. im not your mom')]]
     layout = cross_tab_layout
     tabs = [[sg.Tab('Scanning (nmap)', scan_tab, key='-SCAN_TAB-', metadata=('-SCAN_TAB-', do_scan))],
             [sg.Tab('Web scraping', scrape_tab, key='-SCRAPE_TAB-', metadata=('-SCRAPE_TAB-', do_scrape))]]
@@ -91,12 +86,8 @@ if __name__ == '__main__':
     current_tab = ''
     while True:
         event, values = my_ui.window.read()
-        if event == sg.WINDOW_CLOSED:# or event == 'Never-mind':
+        if event == sg.WINDOW_CLOSED or event == 'Never-mind':
             break
-        elif event == 'Never-mind':
-            my_ui.yes_no = False
-            print('eow')
-            my_ui.window.refresh()
         elif event == 'Scan!' or event == 'Return' or event == '-GO-':
             my_ui.yes_no = True
             function_to_execute = my_dict[my_ui.my_tab_group.Get()]

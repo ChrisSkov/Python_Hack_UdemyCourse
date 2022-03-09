@@ -17,33 +17,32 @@ def update_output_text(window, field_to_update, new_text):
 
 
 class EmailScraper:
-    scraped_urls = set()
-    emails = set()
-    urls = ''
-    count = 0
-    output = ''
 
     def scrape_emails(self, target, window):
-
-        global output
+        scraped_urls = set()
+        emails = set()
+        urls = ''
+        count = 0
+        output = ''
         web_prefix = 'https://www.'
         sub_domains = []
-        self.urls = deque([str(web_prefix + target)])
+        urls = deque([str(web_prefix + target)])
         out_string = ''
+        update_output_text(window=window, field_to_update='-OUTPUT-', new_text='')
         try:
             output = ''
-            while len(self.urls) and ui_ting.yes_no is True:
-                self.count += 1
-                if self.count == 100:
+            while len(urls):
+                count += 1
+                if count == 10:
                     break
-                url = self.urls.popleft()
-                self.scraped_urls.add(url)
+                url = urls.popleft()
+                scraped_urls.add(url)
 
                 parts = urllib.parse.urlsplit(url)
                 base_url = '{0.scheme}://{0.netloc}'.format(parts)
 
                 path = url[:url.rfind('/') + 1] if '/' in parts.path else url
-                out_string += '\n [%d] Processing %s' % (self.count, url)
+                out_string += '\n [%d] Processing %s' % (count, url)
                 sub_domains.append([re.findall(r"[a-z0-9\.\-+_]+.[a-z0-9\.\-+_]+\.[a-z]+.[a-z0-0\.\-+_']", url)])
                 output += url + '\n'
                 # NOTE TO SELF: CAN BE EXTENDED TO PRINT SUBDOMAINS WITHOUT TLS/SSL
@@ -56,7 +55,7 @@ class EmailScraper:
                     continue
 
                 new_emails = set(re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", response.text, re.I))
-                self.emails.update(new_emails)
+                emails.update(new_emails)
 
                 soup = BeautifulSoup(response.text, features="lxml")
 
@@ -66,16 +65,17 @@ class EmailScraper:
                         link = base_url + link
                     elif not link.startswith('http'):
                         link = path + link
-                    elif link not in self.urls and link not in self.scraped_urls:
-                        self.urls.append(link)
+                    elif link not in urls and link not in scraped_urls:
+                        urls.append(link)
 
         except KeyboardInterrupt:
             print('[-] Closing!')
 
-        for mail in self.emails:
+        for mail in emails:
             output += mail + '\n'
             update_output_text(window=window, field_to_update='-OUTPUT-', new_text=output)
             print(mail)
+        print('\nDONE')
 
 
 if __name__ == '__main__':
