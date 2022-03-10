@@ -3,6 +3,7 @@
 import PySimpleGUI as sg
 import subprocess
 import email_scraper as es
+import threading
 
 
 def start_nmap(arguments):
@@ -11,7 +12,6 @@ def start_nmap(arguments):
                           new_text='Running command: ' + command_to_run)
     # sg.popup(command_to_run, keep_on_top=False)
     sp = subprocess.run(command_to_run, shell=True, text=True, capture_output=False)
-
     # sp = subprocess.Popen(['nmap'] + [arg_string], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     scan_output = sp.stdout
 
@@ -19,8 +19,8 @@ def start_nmap(arguments):
 
 
 def do_scrape(val):
-    scrape_me = es.EmailScraper()
-    es.EmailScraper.scrape_emails(self=scrape_me, target=val['-INPUT-'], window=my_ui.window)
+    es.reset_scrape_flag()
+    es.scrape_emails(target=val['-INPUT-'], window=my_ui.window)
 
 
 def do_scan(val):
@@ -39,7 +39,7 @@ class UILayout:
                sg.Checkbox('Treat all hosts as online', key='-Pn', metadata='-Pn')],
               [sg.Checkbox('Fast mode', key='-F', metadata='-F')]]
 
-    output_column = [[sg.Column([[sg.Output(size=(90, 90), key='-OUTPUT-', expand_y=True, expand_x=True)]],
+    output_column = [[sg.Column([[sg.Text(size=(90, 90), key='-OUTPUT-', expand_y=True, expand_x=True)]],
                                 expand_x=True, expand_y=True)]]
     scan_tab = [[sg.Column(column)]]
     scrape_tab = [[sg.Text('Scrape emails.... or don\'t. im not your mom')]]
@@ -84,14 +84,22 @@ if __name__ == '__main__':
     my_ui = UILayout()
     dict_setup()
     current_tab = ''
+    t1 = threading
+
     while True:
+        # print(es.EmailScraper.ting)
         event, values = my_ui.window.read()
-        if event == sg.WINDOW_CLOSED or event == 'Never-mind':
+        if event == sg.WINDOW_CLOSED:  # or event == 'Never-mind':
             break
         elif event == 'Scan!' or event == 'Return' or event == '-GO-':
             my_ui.yes_no = True
             function_to_execute = my_dict[my_ui.my_tab_group.Get()]
-            function_to_execute(values)
+            global func
+            func = my_ui.window.perform_long_operation(lambda: function_to_execute(values), '-END_KEY-')
+        elif event == 'Never-mind':
+            func.join(0.2)
+            es.stop_scrape()
         else:
             change_go_button_text()
+
     my_ui.window.close()

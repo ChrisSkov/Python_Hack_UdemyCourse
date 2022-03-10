@@ -8,7 +8,6 @@ import re
 user_url = str(input('[+] Enter target URL to scan: '))
 urls = deque([user_url])
 
-
 scraped_urls = set()
 emails = set()
 
@@ -16,14 +15,14 @@ count = 0
 
 try:
     while len(urls):
-        count +=1
-        if count == 100:
-            break
-        url = urls.popleft()
-        scraped_urls.add(url)
+        # count +=1
+        # if count == 100:
+        #    break
+        #  url = urls.popleft()
+        #  scraped_urls.add(url)
 
-        parts = urllib.parse.urlsplit(url)
-        base_url = '{0.scheme}://{0.netloc}'.format(parts)
+        #  parts = urllib.parse.urlsplit(url)
+        #  base_url = '{0.scheme}://{0.netloc}'.format(parts)
 
         path = url[:url.rfind('/') + 1] if '/' in parts.path else url
 
