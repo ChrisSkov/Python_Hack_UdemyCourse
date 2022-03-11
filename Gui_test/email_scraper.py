@@ -7,7 +7,7 @@ import re
 
 # https://www.kea.dk
 
-ting = 0
+stop_start_flag = 0
 
 
 def update_output_text(window, field_to_update, new_text):
@@ -16,13 +16,13 @@ def update_output_text(window, field_to_update, new_text):
 
 
 def stop_scrape():
-    global ting
-    ting += 1
+    global stop_start_flag
+    stop_start_flag += 1
 
 
 def reset_scrape_flag():
-    global ting
-    ting = 0
+    global stop_start_flag
+    stop_start_flag = 0
 
 
 def scrape_emails(target, window):
@@ -34,19 +34,19 @@ def scrape_emails(target, window):
     sub_domains = []
     urls = deque([str(web_prefix + target)])
     out_string = ''
-    global ting
+    global stop_start_flag
 
     # update_output_text(window=window, field_to_update='-OUTPUT-', new_text='')
     try:
+        print('Scraping subdomains and emails from: ' + target + '\nPlease wait')
         output = ''
         while len(urls):
             count += 1
-            global ting
+            global stop_start_flag
             if count == 100:
                 break
-            elif ting > 0:
+            elif stop_start_flag > 0:
                 break
-            print(ting)
             url = urls.popleft()
             scraped_urls.add(url)
 
@@ -59,7 +59,7 @@ def scrape_emails(target, window):
             output += url + '\n'
             # NOTE TO SELF: CAN BE EXTENDED TO PRINT SUBDOMAINS WITHOUT TLS/SSL
             #   update_output_text(window=window, field_to_update='-OUTPUT-', new_text=output)
-            # print('[%d] Processing %s' % (self.count, url))
+            print('[%d] Processing %s' % (count, url))
 
             try:
                 response = requests.get(url)
@@ -86,6 +86,5 @@ def scrape_emails(target, window):
     for mail in emails:
         output += mail + '\n'
     # update_output_text(window=window, field_to_update='-OUTPUT-', new_text=output)
-    #  print(mail)
+        print(mail)
     print('\nDONE')
-    print(ting)

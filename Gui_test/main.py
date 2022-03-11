@@ -39,7 +39,7 @@ class UILayout:
                sg.Checkbox('Treat all hosts as online', key='-Pn', metadata='-Pn')],
               [sg.Checkbox('Fast mode', key='-F', metadata='-F')]]
 
-    output_column = [[sg.Column([[sg.Text(size=(90, 90), key='-OUTPUT-', expand_y=True, expand_x=True)]],
+    output_column = [[sg.Column([[sg.Output(size=(90, 90), key='-OUTPUT-', expand_y=True, expand_x=True)]],
                                 expand_x=True, expand_y=True)]]
     scan_tab = [[sg.Column(column)]]
     scrape_tab = [[sg.Text('Scrape emails.... or don\'t. im not your mom')]]
@@ -65,10 +65,11 @@ def get_scan_args():
 
 
 def change_go_button_text():
-    my_text = str(values[event])
-    update_text = my_text[1:my_text.find('_')]
-    update_text = update_text[0:1] + update_text[1:].lower() + '!'
-    my_ui.go_button.update(text=update_text)
+    if values[event] is not None:
+        my_text = str(values[event])
+        update_text = my_text[1:my_text.find('_')]
+        update_text = update_text[0:1] + update_text[1:].lower() + '!'
+        my_ui.go_button.update(text=update_text)
 
 
 def dict_setup():
