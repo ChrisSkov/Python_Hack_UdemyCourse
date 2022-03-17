@@ -1,1 +1,1 @@
-chmod,shell,admin,env,.env,console,script,cd,rm,rf,wget,debug,config,ignition,-
+chmod,shell,admin,env,.env,console,script,cd,rm,rf,wget,debug,config,ignition,-,sql,db,administrator,netgear,mod,jndi,exploit,exploit,xleet
