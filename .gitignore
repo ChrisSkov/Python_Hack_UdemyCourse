@@ -122,3 +122,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+LogParser/log_results_2022-03-18.txt
+
+LogParser/test1.1.txt
+
+LogParser/test2.1.txt

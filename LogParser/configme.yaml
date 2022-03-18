@@ -1,4 +1,8 @@
+---
+
 parsing:
-  name_pattern:
-  black_list:
-  white_list:
+  -name_pattern: ^(?:([a-z0-9+])+\.([a-z0-9+])+\.(log|txt))
+  -black_list:
+  -white_list:
+
+...
