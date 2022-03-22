@@ -1,8 +1,9 @@
 ---
 
 parsing:
-  -name_pattern: ^(?:([a-z0-9+])+\.([a-z0-9+])+\.(log|txt))
-  -black_list:
+  -name_pattern: '*.[0-9].*'
+  # black/white list can either be 'True' or 'False'
+  -black_list: 'True'
   -white_list:
 
 ...
