@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from ip2geotools.databases.noncommercial import DbIpCity
 import pycountry
 import datetime
