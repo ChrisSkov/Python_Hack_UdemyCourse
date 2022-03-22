@@ -97,6 +97,7 @@ def find_info_from_ip(line):
         result = (line_to_print, req_country)
         return result
 
+
 # Starts program according to parameters in the config file
 def start_program():
     with open('configme.yaml') as config:
