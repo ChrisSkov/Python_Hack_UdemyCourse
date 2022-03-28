@@ -1,6 +1,6 @@
 import socket
 
-HOST = "127.0.0.1"
+HOST = "10.77.77.26"
 PORT = 65432
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -9,10 +9,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     conn, addr = s.accept()
     with conn:
         print(f"connected by {addr}")
-        print(socket.gethostname())
         while True:
             data = conn.recv(1024)
-            print(conn.getsockname())
             if not data:
                 break
             conn.sendall(data)
+            print('OS and username: ' + data.decode() + '\nIP Address:  ' + addr[0] + '\nPort:  ' + str(addr[1]))
