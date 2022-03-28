@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
-
 app = Flask(__name__)
 
 
@@ -12,7 +11,7 @@ def hello_world():
 
 @app.route("/tuna", methods=["GET"])
 def fish_me():
-    info = jsonify({'ip': request.remote_addr}), 200
+    info = "<img src='/static/Chef_Cage.jpg'>"
     print(request.remote_addr)
     return info
 
