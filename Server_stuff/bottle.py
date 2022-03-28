@@ -11,8 +11,10 @@ def hello_world():
 
 @app.route("/tuna", methods=["GET"])
 def fish_me():
-    info = "<img src='/static/Chef_Cage.jpg'>"
-    print(request.remote_addr)
+    info = "<img src='/static/Chef_Cage.jpg'>", 200
+    #print(request.remote_addr)
+    print(request.user_agent)
+    print(request.host)
     return info
 
 
